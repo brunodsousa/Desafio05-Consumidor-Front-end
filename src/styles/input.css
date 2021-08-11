@@ -1,0 +1,24 @@
+.div-input {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  position: relative;
+  margin-left: 20px;
+}
+
+.div-input label {
+  color: #393c40;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 20px 0 -20px 16px;
+}
+
+.div-input input {
+  border: 1px solid #bebebe;
+  border-radius: 7px;
+  height: 47px;
+  font-size: 18px;
+  padding: 3px 0 3px 10px;
+  margin: -20px 0 -7px 0;
+}
