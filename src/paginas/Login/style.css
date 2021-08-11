@@ -22,7 +22,7 @@
   flex-direction: column;
   padding: 64px 40px;
   gap: 24px;
-  max-width: 410px;
+  max-width: 490px;
   z-index: 1;
 }
 
@@ -37,7 +37,6 @@
   color: #d13201;
   font-size: 32px;
   line-height: 150%;
-  margin: 0 0 0 20px;
   font-family: "Baloo 2", cursive;
 }
 

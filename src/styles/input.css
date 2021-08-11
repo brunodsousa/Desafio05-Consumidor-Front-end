@@ -1,9 +1,9 @@
 .div-input {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 8px;
   position: relative;
-  margin-left: 20px;
+  width: 408px;
 }
 
 .div-input label {
@@ -11,7 +11,6 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;
-  margin: 20px 0 -20px 16px;
 }
 
 .div-input input {
@@ -20,5 +19,4 @@
   height: 47px;
   font-size: 18px;
   padding: 3px 0 3px 10px;
-  margin: -20px 0 -7px 0;
 }

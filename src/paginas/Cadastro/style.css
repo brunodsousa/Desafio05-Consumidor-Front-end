@@ -1,0 +1,65 @@
+.container-cadastro {
+  display: flex;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.background-cadastro {
+  position: relative;
+  padding: 30px 0 0 20px;
+}
+
+.ilustracao-laranja {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.imagem {
+  position: absolute;
+  top: 300px;
+  left: 150px;
+  z-index: -1;
+}
+
+.form-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  background-color: white;
+  box-shadow: 0px 4px 16px rgba(50, 50, 50, 0.15);
+  border-radius: 0px 0px 0px 88px;
+  padding: 100px 100px 60px 100px;
+  min-height: 100vh;
+  max-width: 611px;
+}
+
+.form-cadastro h1 {
+  color: #d13201;
+  font-size: 32px;
+  line-height: 150%;
+  font-family: "Baloo 2", cursive;
+  margin-bottom: 15px;
+}
+
+.form-cadastro button {
+  background: #d13201;
+  border-radius: 20px;
+  width: 160px;
+  height: 40px;
+  align-self: center;
+  border: unset;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  margin-left: 40px;
+  margin: 40px 0 0 0;
+}
+
+.form-cadastro p {
+  font-size: 12px;
+  color: #6f7377;
+  text-align: center;
+}
