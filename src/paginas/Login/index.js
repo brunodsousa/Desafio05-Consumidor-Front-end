@@ -76,7 +76,7 @@ export default function Login() {
           nome="senha"
           label="Senha"
         />
-        <button className="botao-login" type="submit">
+        <button type="submit">
           Entrar
         </button>
         <p>
