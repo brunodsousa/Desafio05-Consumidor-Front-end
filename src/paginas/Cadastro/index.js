@@ -95,7 +95,7 @@ export default function Cadastro() {
         </div>
         <div className="div-input">
           <label htmlFor="telefone">Telefone</label>
-          <input {...register("telefone")} placeholder="(ddd)número   Ex: 71912345678" type="number" id="telefone" />
+          <input {...register("telefone")} placeholder="Ex: 71912345678" type="number" id="telefone" />
         </div>
         <InputSenha
           {...register("senha")}
