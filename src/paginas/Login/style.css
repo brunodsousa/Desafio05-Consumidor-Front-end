@@ -1,0 +1,64 @@
+.container-login {
+  position: relative;
+  background-image: url("../../assets/login.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  padding: 169px 0 242px 320px;
+}
+
+.ilustracao {
+  position: absolute;
+  top: 163px;
+  left: 146px;
+}
+
+.form-login {
+  position: relative;
+  background-color: white;
+  box-shadow: 0px 4px 16px rgba(50, 50, 50, 0.4);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 64px 40px;
+  gap: 24px;
+  max-width: 410px;
+  z-index: 1;
+}
+
+.titulo-login {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.form-login h1 {
+  color: #d13201;
+  font-size: 32px;
+  line-height: 150%;
+  margin: 0 0 0 20px;
+  font-family: "Baloo 2", cursive;
+}
+
+.form-login button {
+  background: #d13201;
+  border-radius: 20px;
+  width: 126px;
+  height: 40px;
+  align-self: center;
+  border: unset;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  margin-left: 40px;
+  margin: 20px 0 0 0;
+}
+
+.form-login p {
+  font-size: 12px;
+  color: #6f7377;
+  text-align: center;
+  margin: 15px 20px 0 0;
+}
