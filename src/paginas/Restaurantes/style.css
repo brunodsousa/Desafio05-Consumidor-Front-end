@@ -12,6 +12,13 @@
   border-radius: 20px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
   background-color: #F5F5F5;
+  position: relative;
+  z-index: 3;
+}
+
+.input-busca:focus {
+  outline: none;
+  border: 2px solid black;
 }
 
 .ilustracao2 {
