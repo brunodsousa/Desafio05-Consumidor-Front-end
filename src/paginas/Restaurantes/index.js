@@ -13,7 +13,7 @@ import AlertaDeErro from "../../componentes/AlertaDeErro";
 
 
 export default function Produtos() {
-  const { setToken, token, usuario, setUsuario } = useAuth();
+  const { setToken, token } = useAuth();
   const [restaurantes, setRestaurantes] = useState([]);
   const [buscarRestaurante, setBuscarRestaurante] = useState("");
   const [resultadoRestaurante, setResultadoRestaurante] = useState([]);
@@ -62,20 +62,17 @@ export default function Produtos() {
 
   useEffect(() => {
     const resultados = restaurantes.filter(restaurante => restaurante.nome.toLowerCase().includes(buscarRestaurante.toLowerCase()));
-    console.log(resultadoNaoEncontrado);
+    
     if(resultados.length > 0) {
       setResultadoNaoEncontrado(false);
     } else if (resultados.length === 0) {
       setResultadoNaoEncontrado(true);
     }
-    console.log(resultadoNaoEncontrado);  
     setResultadoRestaurante(resultados);
   }, [buscarRestaurante])
 
   function logout() {
     setToken("");
-    setRestaurantes("");
-    setUsuario("");
     history.push("/");
   }
 
