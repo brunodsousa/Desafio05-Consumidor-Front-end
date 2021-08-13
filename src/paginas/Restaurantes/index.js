@@ -1,7 +1,7 @@
 import "./style.css";
 import ilustracao from "../../assets/illustration-2.svg";
 import BackgroundImg from "../../assets/bg-pizzaria.png";
-import logo from "../../assets/logo-login.svg";
+import logo from "../../assets/LogomarcaBranca.svg";
 import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
@@ -61,7 +61,7 @@ export default function Produtos() {
   }, []);
 
   useEffect(() => {
-    const resultados = restaurantes.filter(restaurante => restaurante.nome.toLowerCase().includes(buscarRestaurante));
+    const resultados = restaurantes.filter(restaurante => restaurante.nome.toLowerCase().includes(buscarRestaurante.toLowerCase()));
     console.log(resultadoNaoEncontrado);
     if(resultados.length > 0) {
       setResultadoNaoEncontrado(false);
