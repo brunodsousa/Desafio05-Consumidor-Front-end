@@ -1,5 +1,6 @@
 .container-card {
     position: relative;
+    cursor: pointer;
   }
   
   .conteudo-card {

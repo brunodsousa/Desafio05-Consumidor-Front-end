@@ -11,6 +11,6 @@ export default function useAuthProvider() {
 
   return {
     token,
-    setToken,
+    setToken
   };
 }
