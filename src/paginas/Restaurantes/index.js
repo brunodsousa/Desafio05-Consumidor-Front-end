@@ -4,7 +4,7 @@ import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
 import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { get } from "../../servicos/requisicaoAPI";
 import Card from "../../componentes/Card";
 import { useState, useEffect } from "react";
@@ -115,12 +115,13 @@ export default function Produtos() {
               {restaurantes.map((restaurante) => (
                 <Card
                   key={restaurante.id}
+                  id={restaurante.id}
                   preco={restaurante.preco}
                   nome={restaurante.nome}
                   descricao={restaurante.descricao}
                   imagem={restaurante.imagem}
-                />
-              ))}
+                  />
+                  ))}
             </div>
             ) : (
             <div className="container-cards">

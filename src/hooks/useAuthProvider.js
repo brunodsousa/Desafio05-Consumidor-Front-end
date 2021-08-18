@@ -4,6 +4,8 @@ import { useLocalStorage } from "react-use";
 export default function useAuthProvider() {
   const [value, setValue] = useLocalStorage("TOKEN-CONSUMIDOR", "");
   const [token, setToken] = useState(value);
+  const [carrinho, setCarrinho] = useState([]);
+  const [restaurante, setRestaurante] = useState({});
 
   useEffect(() => {
     setValue(token);
@@ -12,5 +14,9 @@ export default function useAuthProvider() {
   return {
     token,
     setToken,
+    carrinho,
+    setCarrinho,
+    restaurante,
+    setRestaurante
   };
 }

@@ -4,6 +4,7 @@
   }
   
   .conteudo-card {
+    position: relative;
     width: 590px;
     min-height: 238px;
     display: flex;
