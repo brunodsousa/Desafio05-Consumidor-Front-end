@@ -7,7 +7,6 @@ export default function Card({
     nome,
     descricao,
     imagem,
-    precoProduto
 }) {
   const history = useHistory();
 
@@ -18,7 +17,7 @@ export default function Card({
           <h3>{nome}</h3>
           <p>{descricao}</p>
           <span>
-            {precoProduto ? `R$ ${precoProduto / 100}` : "$$$"}
+            "$$$"
           </span>
         </div>
         <img src={imagem ? imagem : logo} />
