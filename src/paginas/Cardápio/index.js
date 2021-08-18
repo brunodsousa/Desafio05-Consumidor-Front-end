@@ -13,6 +13,8 @@ import { get } from "../../servicos/requisicaoAPI";
 import CardProduto from "../../componentes/CardProduto";
 import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
+import Carrinho from "../../componentes/Carrinho";
+import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
 
 export default function Produtos() {
   const { setToken, token, restaurante, setRestaurante } = useAuth();
@@ -20,6 +22,7 @@ export default function Produtos() {
   const history = useHistory();
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
 
   const { id } = useParams();
 
@@ -31,6 +34,15 @@ export default function Produtos() {
       clearTimeout(timeout);
     };
   }, [erro]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMensagemSucesso("");
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [mensagemSucesso]);
 
   async function detalharRestaurante() {
     setCarregando(true);
@@ -44,7 +56,7 @@ export default function Produtos() {
         return setErro(dados);
       }
 
-      return setRestaurante(dados);
+      return setRestaurante(dados.restaurante);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
@@ -108,7 +120,7 @@ export default function Produtos() {
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-      <button className="revisar-pedido">Revisar Pedido</button>
+      <div className="revisar-pedido"><Carrinho setMensagemSucesso={setMensagemSucesso}/></div>
       <div className="conteudo-pagina">
         <div className="detalhes-restaurante">
           <div className="informacoes">
@@ -151,12 +163,14 @@ export default function Produtos() {
               descricao={produto.descricao}
               imagem={produto.imagem}
               precoProduto={produto.preco}
+              id={produto.id}
             />
           ))}
         </div>
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
+      <AlertaDeConfirmacao mensagem={mensagemSucesso}/>
     </div>
   );
 }

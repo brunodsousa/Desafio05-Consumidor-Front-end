@@ -2,6 +2,7 @@ import "./style.css";
 import ModalProduto from "../ModalProduto";
 
 export default function CardProduto({
+    id,
     nome,
     descricao,
     imagem,
@@ -11,7 +12,7 @@ export default function CardProduto({
   return (
     <div className="container-card" >
       <div className="conteudo-card">
-        <ModalProduto nome={nome} descricao={descricao} imagem={imagem} preco={precoProduto}/>
+        <ModalProduto id={id} nome={nome} descricao={descricao} imagem={imagem} preco={precoProduto}/>
         <div className="informacao-card">
           <h3>{nome}</h3>
           <p>{descricao}</p>

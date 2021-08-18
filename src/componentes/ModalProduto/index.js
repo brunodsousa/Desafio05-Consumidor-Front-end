@@ -8,6 +8,7 @@ export default function ModalProduto({
   descricao,
   preco,
   imagem,
+  id,
 }) {
   const [open, setOpen] = useState(false);
   const { carrinho, setCarrinho, restaurante, setRestaurante } = useAuth();
@@ -22,16 +23,16 @@ export default function ModalProduto({
   }
 
   function adicionarAoCarrinho () {
-    const carrinhoAtualizado = carrinho;
+    const carrinhoAtualizado = [...carrinho];
 
-    const produtoNoCarrinho = carrinhoAtualizado.find(produto => produto.nome === nome)
+    const produtoNoCarrinho = carrinhoAtualizado.find(produto => produto.id === id)
     if(produtoNoCarrinho) {
       produtoNoCarrinho.quantidade += quantidade;
       setCarrinho(carrinhoAtualizado);
       return 
     }
 
-    setCarrinho([...carrinho, { nome, quantidade, imagem, preco }]);
+    setCarrinho([...carrinho, { id, nome, quantidade, imagem, preco, nomeRestaurante: restaurante.nome }]);
   }
 
   return (

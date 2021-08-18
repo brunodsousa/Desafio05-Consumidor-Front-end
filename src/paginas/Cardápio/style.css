@@ -224,11 +224,16 @@
 
     .revisar-pedido {
       position: relative;
+      z-index: 3;
       left: 1010px;
       top: 40px;
       background-color: #D13201;
-      color: #ffffff;
-      padding: 13px 50px;
+      width: 250px;
+      padding: 13px 35px;
       border: none;
       border-radius: 20px;
+    }
+
+    .revisar-pedido button {
+      color: white;
     }
