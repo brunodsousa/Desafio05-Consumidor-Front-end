@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "'Baloo 2', cursive",  
     lineHeight: "150%",
     fontSize: 40,
+    maxWidth: 350,
     color: "rgba(18, 18, 18, 0.8)",
   },
   enderecoTitulo: {
