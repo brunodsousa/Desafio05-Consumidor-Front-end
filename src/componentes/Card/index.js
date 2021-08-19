@@ -1,11 +1,13 @@
 import "./style.css";
 import logo from "../../assets/LogoRestaurante.png";
 import { useHistory } from 'react-router-dom';
+import ModalInserirProduto from '../ModalProduto';
 
 export default function Card({
     id,
     nome,
     descricao,
+    preco,
     imagem,
 }) {
   const history = useHistory();
@@ -22,6 +24,13 @@ export default function Card({
         </div>
         <img src={imagem ? imagem : logo} />
       </div>
+      <ModalInserirProduto
+          id={id}
+          nomeProduto={nome}
+          descricaoProduto={descricao}
+          precoProduto={preco}
+          imagem={imagem}
+        />
     </div>
   );
 }

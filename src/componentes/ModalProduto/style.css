@@ -8,16 +8,111 @@
 }
 
 .conteudo-modalProduto {
-  height: 400px;
-  width: 400px;
+  height: 820px;
+  width: 625px;
+  border-radius: 30px;
+}
+
+.header-produtos {
+  height: 337px;
+  width: 625px; 
+}
+
+.header-produtos .botao-fechar {
+  position: relative;
+  left: 522px;
+  top: 25px;
+  font-size: 20px;
+  color: #FFFFFF;
+  font-weight: 700;
+  background-color: transparent;
+  max-width: max-content;
+  height: 30px;
+  cursor: pointer;
+}
+
+.infos-modalProduto {
+  width: 502px;
+  margin: 40px 0 0 70px;
+}
+
+.infos-modalProduto h3 {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.detalhes-modal {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.detalhes-modal .titulo {
+  font-weight: 600;
+  margin: 20px 6px;
+}
+
+.detalhes-modal img {
+  width: 15px;
+  height: 15px;
+}
+
+.informacoes-modal {
+  display: flex;
+  align-items: center;
+  margin: 10px 44.5px 0 0; 
+}
+
+.logomarcaRestaurante {
+  position: relative;
+  left: 380px;
+  bottom: 210px;
+  width: 116px;
+  height: 116px;
+  border: 6px solid #ffffff;
+  border-radius: 50%;
+}
+
+.descricao-produto {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 502px;
+  margin: -80px 0px 80px 50px;
+}
+
+.descricao-produto p {
+  width: 270px;
+  font-size: 14px;
+}
+
+.descricao-produto span {
+  width: 180px;
+  height: 45px;
+  color: #006335;
+  font-size: 20px;
+  font-weight: 600;
+  background: linear-gradient(0deg, rgba(68, 109, 90, 0.1), rgba(13, 138, 79, 0.1)), #FFFFFF;
+  padding: 10px 45px;
+  border-radius: 5px;
+}
+
+.botoes-modalProduto {
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 0px 0px -8px;
 }
 
 .botoes-quantidade {
   display: flex;
+  align-items: center;
+  margin: -3px -90px 0px 0;
   gap: 10px;
 }
 
 .soma {
+  width: 30px;
+  height: 30px;
   all: unset;
   color: white;
   background: #D13201;
@@ -28,7 +123,9 @@
   cursor: pointer;
 }
 
-.subtracao {
+.subtracao, .botao-inativo {
+  width: 30px;
+  height: 30px;
   all: unset;
   color: white;
   background: #D13201;
@@ -37,4 +134,61 @@
   font-size: 26px;
   font-weight: bold;
   cursor: pointer;
+  margin-right: 50px;
+}
+
+.botao-inativo {
+  background-color: gray;
+  cursor: unset;
+}
+
+.quantidade {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  right: 22px;
+}
+
+button {
+  width: 250px;
+  height: 40px;
+  padding: 4px 45px 4px 45px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #D13201;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.link-revisaoProduto {
+  position: relative;
+  top: 50px;
+  left: 230px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #525459;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.produtoAdicionado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 370px;
+}
+
+.produtoAdicionado span {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: -30px;
+}
+
+.produtoAdicionado img {
+  width: 102px;
+  height: 102px;
+  margin-bottom: 30px;
 }
