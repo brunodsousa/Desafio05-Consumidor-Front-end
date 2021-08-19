@@ -7,6 +7,7 @@ export default function Card({
     id,
     nome,
     descricao,
+    preco,
     imagem,
 }) {
   const history = useHistory();
