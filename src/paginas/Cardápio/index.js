@@ -44,7 +44,8 @@ export default function Produtos() {
         return setErro(dados);
       }
 
-      return setRestaurante(dados);
+      console.log(dados);
+      return setRestaurante(dados.restaurante);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
@@ -99,7 +100,7 @@ export default function Produtos() {
       205.02deg,
       rgba(18, 18, 18, 0.2) 36.52%,
       rgba(18, 18, 18, 0.8) 77.14%
-      ), url(${BackgroundImg})`,
+      ), url(${restaurante.categoria_imagem})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}
