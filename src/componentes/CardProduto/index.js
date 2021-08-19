@@ -6,13 +6,15 @@ export default function CardProduto({
     nome,
     descricao,
     imagem,
-    precoProduto
+    precoProduto,
+    setMensagemSucesso,
+    setErro
 }) {
 
   return (
     <div className="container-card" >
       <div className="conteudo-card">
-        <ModalProduto id={id} nome={nome} descricao={descricao} imagem={imagem} preco={precoProduto}/>
+        <ModalProduto id={id} nome={nome} descricao={descricao} imagem={imagem} preco={precoProduto} setMensagemSucesso={setMensagemSucesso} setErro={setErro}/>
         <div className="informacao-card">
           <h3>{nome}</h3>
           <p>{descricao}</p>

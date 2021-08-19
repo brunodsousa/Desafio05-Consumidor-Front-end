@@ -2,7 +2,6 @@ import "./style.css";
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ilustracao from "../../assets/illustration-2.svg";
-import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
 import iconePedido from "../../assets/icone-pedido-minimo.svg";
 import iconeTempo from "../../assets/icone-tempo-entrega.svg";
@@ -15,21 +14,23 @@ import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
 import Carrinho from "../../componentes/Carrinho";
 import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
+import { ReactComponent as ArrowLeft } from "../../assets/ArrowLeft.svg";
 
 export default function Produtos() {
-  const { setToken, token, restaurante, setRestaurante } = useAuth();
+  const { setToken, token, restaurante, setRestaurante, carrinho } = useAuth();
   const [cardapio, setCardapio] = useState([]);
   const history = useHistory();
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState("");
+  const [verMais, setVerMais] = useState(false);
 
   const { id } = useParams();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setErro("");
-    }, 3000);
+    }, 4000);
     return () => {
       clearTimeout(timeout);
     };
@@ -116,11 +117,16 @@ export default function Produtos() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <h1>{restaurante.nome}</h1>
+        <div className="nome-restaurante">
+          <ArrowLeft onClick={() => history.push("/restaurantes")} />
+          <h1>{restaurante.nome}</h1>
+        </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-      <div className="revisar-pedido"><Carrinho setMensagemSucesso={setMensagemSucesso}/></div>
+        <div className={carrinho.length > 0 ? "revisar-pedido" : "revisar-pedido-escondido"}>
+          <Carrinho setMensagemSucesso={setMensagemSucesso} />
+        </div>
       <div className="conteudo-pagina">
         <div className="detalhes-restaurante">
           <div className="informacoes">
@@ -143,7 +149,7 @@ export default function Produtos() {
           </div>
         </div>
         <div className="informacoes descricao">
-          <p>{restaurante.descricao}</p>
+          {restaurante.descricao &&  <p>{!verMais && restaurante.descricao.length > 40 ? restaurante.descricao.slice(0, 40) + "..." : restaurante.descricao} <button onClick={() => setVerMais(!verMais)} className={restaurante.descricao.length < 40 ? "ver-mair-desativado" : "ver-mais"}>{verMais ? "ver menos" : "ver mais"}</button></p>}
         </div>
         {produtosAtivos.length === 0 && (
           <div className="listaProdutosVazia">
@@ -164,13 +170,15 @@ export default function Produtos() {
               imagem={produto.imagem}
               precoProduto={produto.preco}
               id={produto.id}
+              setMensagemSucesso={setMensagemSucesso}
+              setErro={setErro}
             />
           ))}
         </div>
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
-      <AlertaDeConfirmacao mensagem={mensagemSucesso}/>
+      <AlertaDeConfirmacao mensagem={mensagemSucesso} />
     </div>
   );
 }

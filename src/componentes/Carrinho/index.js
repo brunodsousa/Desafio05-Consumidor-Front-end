@@ -10,7 +10,7 @@ import close from "../../assets/close-red.svg";
 import imagemCarrinho from "../../assets/carrinho.svg";
 import pedidoVazio from "../../assets/pedido-vazio.svg";
 
-export default function Carrinho({ setMensagemSucesso }) {
+export default function Carrinho({ setMensagemSucesso, fecharModalProduto }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [erro, setErro] = useState("");
@@ -109,6 +109,9 @@ export default function Carrinho({ setMensagemSucesso }) {
 
   function fecharModal() {
     setOpen(false);
+    if(fecharModalProduto) {
+      fecharModalProduto();
+    }
   }
 
   async function confirmarPedido() {
@@ -120,6 +123,7 @@ export default function Carrinho({ setMensagemSucesso }) {
       valor_total: total,
       restauranteId: dadosRestaurante.id,
       produtos,
+      enderecoConsumidor: consumidor
     };
 
     setCarregando(true);
