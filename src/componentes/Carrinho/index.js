@@ -19,18 +19,8 @@ export default function Carrinho({ setMensagemSucesso }) {
   const [consumidor, setConsumidor] = useState({});
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    setSubTotal(0);
-    for(const produto of carrinho) {
-      const valorProduto = produto.quantidade * produto.preco;
-      setSubTotal(subtotal => subtotal += valorProduto);
-    }
-  }, [carrinho]);
-
-  useEffect(() => {
-    setTotal(subTotal+restaurante.taxa_entrega);
-  }, [subTotal]);
+  const [produtos, setProdutos] = useState([]);
+  const [dadosRestaurante, setDadosRestaurante] = useState({});
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -67,6 +57,49 @@ export default function Carrinho({ setMensagemSucesso }) {
     }
   }
 
+  async function dadosPedido () {
+    setErro("");
+    
+    if(carrinho.length === 0) {
+      setProdutos([]);
+      setSubTotal(0);
+      setTotal(0);
+      setDadosRestaurante({});
+      return;
+    }
+    setCarregando(true);
+    try {
+      const resposta = await fetch("http://localhost:8000/dados-pedido", {
+        method: "POST",
+        body: JSON.stringify(carrinho),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const dados = await resposta.json();
+
+      setCarregando(false);
+      if(!resposta.ok) {
+        return setErro(dados);
+      }
+
+      setProdutos(dados.produtos);
+      setSubTotal(dados.subtotal);
+      setTotal(dados.total);
+      setDadosRestaurante(dados.restaurante);
+
+    }catch(error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
+  useEffect(() => {
+    dadosPedido();
+  }, [carrinho]);
+
   useEffect(() => {
     getDadosConsumidor();
   }, []);
@@ -84,9 +117,10 @@ export default function Carrinho({ setMensagemSucesso }) {
 
     const data = {
       subtotal: subTotal, 
-      taxa_de_entrega: restaurante.taxa_entrega,
-      valor_total: total || subTotal + restaurante.taxa_entrega,
-      produtos: carrinho
+      taxa_de_entrega: dadosRestaurante.taxa_entrega,
+      valor_total: total,
+      restauranteId: dadosRestaurante.id,
+      produtos,
     }
     
     setCarregando(true);
@@ -138,7 +172,7 @@ export default function Carrinho({ setMensagemSucesso }) {
           />
           <div className={classes.tituloCarrinho}>
             <img src={imagemCarrinho} alt="carrinho" />
-            <h2 className={classes.nomeRestaurante}>{carrinho.length > 0 ? carrinho[0].nomeRestaurante : restaurante.nome}</h2>
+            <h2 className={classes.nomeRestaurante}>{dadosRestaurante.nome ? dadosRestaurante.nome : restaurante.nome}</h2>
           </div>
           <div className={classes.conteudoCarrinho}>
             {consumidor.endereco ? (
@@ -151,14 +185,14 @@ export default function Carrinho({ setMensagemSucesso }) {
             ) : (
               <ModalEndereco setMensagemSucesso={setMensagemSucesso} getDadosConsumidor={getDadosConsumidor}/>
             )}
-            {carrinho.length > 0 ? (
+            {produtos.length > 0 ? (
               <div className={classes.pedido}>
                 <p className={classes.tempoEntrega}>
                   Tempo de entrega:{" "}
                   <span className={classes.tempo}>{restaurante.tempo_entrega_minutos} min</span>
                 </p>
                 <div className={classes.listaProdutos}>
-                  {carrinho.map((produto) => (
+                  {produtos.map((produto) => (
                     <CardProdutoCarrinho
                       key={produto.id}
                       nome={produto.nome}
@@ -192,7 +226,7 @@ export default function Carrinho({ setMensagemSucesso }) {
                   <div className={classes.totais}>
                     <p>Taxa de entrega</p>
                     <span className={classes.subtotal}>
-                      {Number(restaurante.taxa_entrega / 100).toLocaleString("pt-BR", {
+                      {Number(dadosRestaurante.taxa_entrega / 100).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
@@ -201,7 +235,7 @@ export default function Carrinho({ setMensagemSucesso }) {
                   <div className={classes.totais}>
                     <p>Total</p>
                     <span className={classes.total}>
-                      {Number(total / 100 || ((subTotal + restaurante.taxa_entrega) / 100)).toLocaleString("pt-BR", {
+                      {Number(total / 100).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}

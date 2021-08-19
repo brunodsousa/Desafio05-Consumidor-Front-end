@@ -32,7 +32,7 @@ export default function ModalProduto({
       return 
     }
 
-    setCarrinho([...carrinho, { id, nome, quantidade, imagem, preco, nomeRestaurante: restaurante.nome }]);
+    setCarrinho([...carrinho, { id, quantidade, idRestaurante: restaurante.id }]);
   }
 
   return (
