@@ -29,6 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
   tituloCarrinho: {
     display: "flex",
+    justifyContent: "space-between",
+  },
+  limparCarrinho: {
+    all: "unset",
+    color: "#d13201",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  nomeCarrinho: {
+    display: "flex",
     gap: 14,
   },
   nomeRestaurante: {
