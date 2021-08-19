@@ -5,22 +5,22 @@ import Carregando from "../Carregando";
 import CardProdutoCarrinho from "../CardProdutoCarrinho";
 import ModalEndereco from "../ModalEndereco";
 import AlertaDeErro from "../AlertaDeErro";
-import AlertaDeConfirmacao from "../AlertaDeConfirmacao";
 import useAuth from "../../hooks/useAuth";
 import close from "../../assets/close-red.svg";
-import carrinho from "../../assets/carrinho.svg";
-import checked from "../../assets/checked.svg";
+import imagemCarrinho from "../../assets/carrinho.svg";
 import pedidoVazio from "../../assets/pedido-vazio.svg";
 
-export default function Carrinho() {
+export default function Carrinho({ setMensagemSucesso, fecharModalProduto }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
-  const { token } = useAuth();
+  const { token, carrinho, setCarrinho, restaurante } = useAuth();
   const [consumidor, setConsumidor] = useState({});
-  const [produtos, setProdutos] = useState(["1", "2"]);
-  const [mensagemSucesso, setMensagemSucesso] = useState("");
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [produtos, setProdutos] = useState([]);
+  const [dadosRestaurante, setDadosRestaurante] = useState({});
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -30,15 +30,6 @@ export default function Carrinho() {
       clearTimeout(timeout);
     };
   }, [erro]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setMensagemSucesso("");
-    }, 3000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [mensagemSucesso]);
 
   async function getDadosConsumidor() {
     setErro("");
@@ -58,13 +49,55 @@ export default function Carrinho() {
       if (!resposta.ok) {
         return setErro(dados);
       }
-      
+
       setConsumidor(dados.endereco);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
     }
   }
+
+  async function dadosPedido() {
+    setErro("");
+
+    if (carrinho.length === 0) {
+      setProdutos([]);
+      setSubTotal(0);
+      setTotal(0);
+      setDadosRestaurante({});
+      return;
+    }
+    setCarregando(true);
+    try {
+      const resposta = await fetch("http://localhost:8000/dados-pedido", {
+        method: "POST",
+        body: JSON.stringify(carrinho),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const dados = await resposta.json();
+
+      setCarregando(false);
+      if (!resposta.ok) {
+        return setErro(dados);
+      }
+
+      setProdutos(dados.produtos);
+      setSubTotal(dados.subtotal);
+      setTotal(dados.total);
+      setDadosRestaurante(dados.restaurante);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
+  useEffect(() => {
+    dadosPedido();
+  }, [carrinho]);
 
   useEffect(() => {
     getDadosConsumidor();
@@ -76,10 +109,50 @@ export default function Carrinho() {
 
   function fecharModal() {
     setOpen(false);
+    if(fecharModalProduto) {
+      fecharModalProduto();
+    }
   }
 
   async function confirmarPedido() {
-    console.log("aqui");
+    setErro("");
+
+    const data = {
+      subtotal: subTotal,
+      taxa_de_entrega: dadosRestaurante.taxa_entrega,
+      valor_total: total,
+      restauranteId: dadosRestaurante.id,
+      produtos,
+      enderecoConsumidor: consumidor
+    };
+
+    setCarregando(true);
+    try {
+      const resposta = await fetch("http://localhost:8000/pedidos", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setCarregando(false);
+
+      if (!resposta.ok) {
+        const dados = await resposta.json();
+        return setErro(dados);
+      }
+
+      setCarrinho([]);
+      setMensagemSucesso(
+        "Pedido confirmado! Agora é só aguardar o seu pedido."
+      );
+      fecharModal();
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
   }
 
   return (
@@ -102,8 +175,21 @@ export default function Carrinho() {
             onClick={fecharModal}
           />
           <div className={classes.tituloCarrinho}>
-            <img src={carrinho} alt="carrinho" />
-            <h2 className={classes.nomeRestaurante}>Restaurante</h2>
+            <div className={classes.nomeCarrinho}>
+              <img src={imagemCarrinho} alt="carrinho" />
+              <h2 className={classes.nomeRestaurante}>
+                {dadosRestaurante.nome
+                  ? dadosRestaurante.nome
+                  : restaurante.nome}
+              </h2>
+            </div>
+            {carrinho.length > 0 ? (
+              <button type="button" className={classes.limparCarrinho} onClick={() => setCarrinho([])}>
+                Limpar
+              </button>
+            ) : (
+              ""
+            )}
           </div>
           <div className={classes.conteudoCarrinho}>
             {consumidor.endereco ? (
@@ -111,24 +197,37 @@ export default function Carrinho() {
                 <span className={classes.enderecoTitulo}>
                   Endereço de Entrega:{" "}
                 </span>
-                {consumidor.endereco}{consumidor.complemento && <span>, {consumidor.complemento}</span>}, {consumidor.cep.slice(0, 5)}-{consumidor.cep.slice(5)}
+                {consumidor.endereco}
+                {consumidor.complemento && (
+                  <span>, {consumidor.complemento}</span>
+                )}
+                , {consumidor.cep.slice(0, 5)}-{consumidor.cep.slice(5)}
               </p>
             ) : (
-              <ModalEndereco setMensagemSucesso={setMensagemSucesso} getDadosConsumidor={getDadosConsumidor}/>
+              <ModalEndereco
+                setMensagemSucesso={setMensagemSucesso}
+                getDadosConsumidor={getDadosConsumidor}
+              />
             )}
             {produtos.length > 0 ? (
               <div className={classes.pedido}>
                 <p className={classes.tempoEntrega}>
                   Tempo de entrega:{" "}
-                  <span className={classes.tempo}>45 min</span>
+                  <span className={classes.tempo}>
+                    {restaurante.tempo_entrega_minutos} min
+                  </span>
                 </p>
                 <div className={classes.listaProdutos}>
                   {produtos.map((produto) => (
                     <CardProdutoCarrinho
-                      key={produto}
-                      nome="Pizza"
-                      quantidade={produto}
-                      preco="9999"
+                      key={produto.id}
+                      nome={produto.nome}
+                      quantidade={produto.quantidade}
+                      preco={produto.preco}
+                      imagem={produto.imagem}
+                      id={produto.id}
+                      carrinho={carrinho}
+                      setCarrinho={setCarrinho}
                     />
                   ))}
                 </div>
@@ -144,7 +243,7 @@ export default function Carrinho() {
                   <div className={classes.totais}>
                     <p>Subtotal</p>
                     <span className={classes.subtotal}>
-                      {Number(29997 / 100).toLocaleString("pt-BR", {
+                      {Number(subTotal / 100).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
@@ -153,7 +252,9 @@ export default function Carrinho() {
                   <div className={classes.totais}>
                     <p>Taxa de entrega</p>
                     <span className={classes.subtotal}>
-                      {Number(890 / 100).toLocaleString("pt-BR", {
+                      {Number(
+                        dadosRestaurante.taxa_entrega / 100
+                      ).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
@@ -162,7 +263,7 @@ export default function Carrinho() {
                   <div className={classes.totais}>
                     <p>Total</p>
                     <span className={classes.total}>
-                      {Number(30887 / 100).toLocaleString("pt-BR", {
+                      {Number(total / 100).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
@@ -179,12 +280,11 @@ export default function Carrinho() {
               </div>
             ) : (
               <div className={classes.carrinhoVazio}>
-                <img src={pedidoVazio} alt="carrinho vazio"/>
+                <img src={pedidoVazio} alt="carrinho vazio" />
               </div>
             )}
             <AlertaDeErro erro={erro} />
             <Carregando open={carregando} />
-            <AlertaDeConfirmacao mensagem={mensagemSucesso}/>
           </div>
         </div>
       </Dialog>

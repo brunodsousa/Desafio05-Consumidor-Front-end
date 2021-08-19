@@ -5,6 +5,7 @@ import IconeValorPedido from "../../assets/icone-pedido-minimo.svg";
 import IconeTempoEntrega from "../../assets/icone-tempo-entrega.svg";
 import IconeCarrinho from "../../assets/carrinho-compras.svg";
 import logoPadraoRestaurante from "../../assets/LogoRestaurante.png";
+import Carrinho from "../Carrinho";
 import "./style.css";
 
 export default function ModalProduto({
@@ -12,9 +13,12 @@ export default function ModalProduto({
   descricao,
   preco,
   imagem,
+  id,
+  setMensagemSucesso,
+  setErro
 }) {
   const [open, setOpen] = useState(false);
-  const { carrinho, setCarrinho, restaurante, setRestaurante } = useAuth();
+  const { carrinho, setCarrinho, restaurante } = useAuth();
   const [quantidade, setQuantidade] = useState(1);
   const [produtoAdicionado, setProdutoAdicionado] = useState(false);
 
@@ -25,21 +29,33 @@ export default function ModalProduto({
   function handleClose() {
     setOpen(false);
     setProdutoAdicionado(false);
+    setQuantidade(1);
   }
 
-  function adicionarAoCarrinho () {
-    const carrinhoAtualizado = carrinho;
+  function adicionarAoCarrinho() {
+    const carrinhoAtualizado = [...carrinho];
 
-    setProdutoAdicionado(true);
-
-    const produtoNoCarrinho = carrinhoAtualizado.find(produto => produto.nome === nome)
-    if(produtoNoCarrinho) {
+    const produtoNoCarrinho = carrinhoAtualizado.find(
+      (produto) => produto.id === id
+    );
+    if (produtoNoCarrinho) {
       produtoNoCarrinho.quantidade += quantidade;
       setCarrinho(carrinhoAtualizado);
-      return 
+      setProdutoAdicionado(true);
+      return;
     }
 
-    setCarrinho([...carrinho, { nome, quantidade, imagem, preco }]);
+    if(carrinho.length > 0) {
+      if(restaurante.id !== carrinho[0].idRestaurante) {
+        return setErro("Você só pode ter produtos de um restaurante no carrinho.");
+      }
+    }
+
+    setProdutoAdicionado(true);
+    setCarrinho([
+      ...carrinho,
+      { id, quantidade, idRestaurante: restaurante.id },
+    ]);
   }
 
   return (
@@ -54,20 +70,22 @@ export default function ModalProduto({
       >
         <div className="conteudo-modalProduto">
           <div
-          className="header-produtos"
-          style={{
-            backgroundImage: `linear-gradient(
+            className="header-produtos"
+            style={{
+              backgroundImage: `linear-gradient(
         205.02deg,
         rgba(18, 18, 18, 0.2) 36.52%,
         rgba(18, 18, 18, 0.8) 77.14%
         ), url(${imagem})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
           >
-            <button className="botao-fechar" onClick={handleClose}>x</button>
+            <button className="botao-fechar" onClick={handleClose}>
+              x
+            </button>
           </div>
-          {produtoAdicionado ? ( 
+          {produtoAdicionado ? (
             <div className="produtoAdicionado">
               <img src={IconeCarrinho} alt="icone de carrinho de compras" />
               <span>Pedido adicionado!</span>
@@ -78,52 +96,81 @@ export default function ModalProduto({
                 <h3>{nome}</h3>
                 <div className="detalhes-modal">
                   <div className="informacoes-modal">
-                    <img src={IconeValorPedido} alt="icone valor do pedido mínimo" />
+                    <img
+                      src={IconeValorPedido}
+                      alt="icone valor do pedido mínimo"
+                    />
                     <span className="titulo">Pedido Mínimo: </span>
                     <span>
-                      {Number(restaurante.valor_minimo_pedido / 100).toLocaleString(
-                        "pt-BR",
-                        {
-                          style: "currency",
-                          currency: "BRL",
-                        }
-                      )}
+                      {Number(
+                        restaurante.valor_minimo_pedido / 100
+                      ).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
                     </span>
                   </div>
                   <div className="informacoes-modal">
-                    <img src={IconeTempoEntrega} alt="icone valor do pedido mínimo" />
+                    <img
+                      src={IconeTempoEntrega}
+                      alt="icone valor do pedido mínimo"
+                    />
                     <span className="titulo">Tempo de Entrega: </span>
                     <span>{restaurante.tempo_entrega_minutos} min</span>
                   </div>
                 </div>
-                <img className="logomarcaRestaurante" src={restaurante.imagem ? restaurante.imagem : logoPadraoRestaurante} alt="logomarca do restaurante" />
+                <img
+                  className="logomarcaRestaurante"
+                  src={
+                    restaurante.imagem
+                      ? restaurante.imagem
+                      : logoPadraoRestaurante
+                  }
+                  alt="logomarca do restaurante"
+                />
               </div>
               <div className="descricao-produto">
                 <p>{descricao}</p>
                 <span>
-                  {Number(preco / 100).toLocaleString(
-                    "pt-BR",
-                    {
-                      style: "currency",
-                      currency: "BRL",
-                    }
-                  )}
+                  {Number(preco / 100).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </span>
               </div>
               <div className="botoes-modalProduto">
                 <div className="botoes-quantidade">
-                  <button className={quantidade <= 1 ? "botao-inativo" : "subtracao"} onClick={() => quantidade > 1 ? setQuantidade(quantidade => quantidade - 1) : setQuantidade(1)}>-</button>
+                  <button
+                    className={quantidade <= 1 ? "botao-inativo" : "subtracao"}
+                    onClick={() =>
+                      quantidade > 1
+                        ? setQuantidade((quantidade) => quantidade - 1)
+                        : setQuantidade(1)
+                    }
+                  >
+                    -
+                  </button>
                   <div className="quantidade">{quantidade}</div>
-                  <button className="soma" onClick={() => setQuantidade(quantidade => quantidade + 1)}>+</button>
+                  <button
+                    className="soma"
+                    onClick={() =>
+                      setQuantidade((quantidade) => quantidade + 1)
+                    }
+                  >
+                    +
+                  </button>
                 </div>
-                <button className="button" onClick={adicionarAoCarrinho}>Adicionar ao carrinho</button>
+                <button className="button" onClick={adicionarAoCarrinho}>
+                  Adicionar ao carrinho
+                </button>
               </div>
             </div>
           )}
-          <span className="link-revisaoProduto">Ir para revisão do produto</span>
+          <div className="modal-carrinho">
+            <Carrinho setMensagemSucesso={setMensagemSucesso} fecharModalProduto={handleClose} />
+          </div>
         </div>
       </Dialog>
     </div>
   );
 }
-

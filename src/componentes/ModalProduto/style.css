@@ -53,14 +53,14 @@
 }
 
 .detalhes-modal img {
-  width: 15px;
-  height: 15px;
+  width: 25px;
+  height: 25px;
 }
 
 .informacoes-modal {
   display: flex;
   align-items: center;
-  margin: 10px 44.5px 0 0; 
+  margin: 10px 25px 0 0; 
 }
 
 .logomarcaRestaurante {
@@ -162,15 +162,9 @@ button {
   cursor: pointer;
 }
 
-.link-revisaoProduto {
-  position: relative;
-  top: 50px;
-  left: 230px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #525459;
-  text-decoration: underline;
-  cursor: pointer;
+.modal-carrinho {
+  text-align: center;
+  margin-top: 30px;
 }
 
 .produtoAdicionado {

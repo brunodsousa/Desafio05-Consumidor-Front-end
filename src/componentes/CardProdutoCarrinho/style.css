@@ -52,3 +52,35 @@
     border: 2px solid rgba(251, 59, 0, 0.2);
     border-radius: 16px;
   }
+
+  .quantidadeProdutos{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .quantidadeProdutos p {
+    margin: 0;
+  }
+
+  .somaProduto {
+    all: unset;
+    color: white;
+    background: #D13201;
+    border-radius: 5px;
+    padding: 2px 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .subtracaoProduto {
+    all: unset;
+    color: white;
+    background: #D13201;
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }

@@ -36,6 +36,24 @@
     top: 60px;
     width: 170px;
   }
+
+  .nome-restaurante{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nome-restaurante svg {
+    background-color: transparent;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+
+  .nome-restaurante svg path {
+    stroke: white;
+  }
   
   .header-restaurantes h1 {
     font-family: "Baloo 2", cursive;
@@ -49,6 +67,7 @@
     all: unset;
     color: white;
     cursor: pointer;
+    z-index: 3;
   }
   
   .conteudo-pagina {
@@ -202,15 +221,40 @@
       position: relative;
       left: 270px;
       bottom: 44px;
+      max-width: 425px;
     }
 
     .revisar-pedido {
       position: relative;
+      z-index: 3;
       left: 1010px;
       top: 40px;
       background-color: #D13201;
-      color: #ffffff;
-      padding: 13px 50px;
+      width: 250px;
+      padding: 13px 35px;
       border: none;
       border-radius: 20px;
+    }
+
+    .revisar-pedido-escondido {
+      position: relative;
+      z-index: -2;
+      left: 1010px;
+      top: 40px;
+      opacity: 0;
+    }
+
+    .revisar-pedido button {
+      color: white;
+    }
+
+    .ver-mais {
+      all: unset;
+      color: #D13201;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .ver-mair-desativado {
+      display: none;
     }
