@@ -9,3 +9,6 @@ input[type="number"] {
   appearance: textfield;
 }
 
+.MuiPaper-rounded {
+  border-radius: 30px !important;
+}
