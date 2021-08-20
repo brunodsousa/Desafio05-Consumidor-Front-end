@@ -10,6 +10,7 @@ import useAuth from "./hooks/useAuth";
 import Login from "./paginas/Login";
 import Cadastro from "./paginas/Cadastro";
 import Restaurantes from "./paginas/Restaurantes";
+import Cardapio from "./paginas/Cardápio";
 
 function RotasProtegidas(props) {
   const { token } = useAuth();
@@ -27,6 +28,7 @@ function App() {
           <Route path="/cadastro" exact component={Cadastro} />
           <RotasProtegidas>
             <Route path="/restaurantes" exact component={Restaurantes}  />
+            <Route path="/restaurantes/:id" exact component={Cardapio} />
           </RotasProtegidas>
         </Switch>
       </Router>
