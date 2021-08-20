@@ -166,7 +166,7 @@ export default function ModalProduto({
               </div>
             </div>
           )}
-          <div className="modal-carrinho">
+          <div className={carrinho.length > 0 ? "modal-carrinho" : "modal-carrinho-escondido"}>
             <Carrinho setMensagemSucesso={setMensagemSucesso} fecharModalProduto={handleClose} />
           </div>
         </div>
