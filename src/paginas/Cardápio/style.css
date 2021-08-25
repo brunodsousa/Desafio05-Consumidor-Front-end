@@ -258,3 +258,9 @@
     .ver-mair-desativado {
       display: none;
     }
+    
+    .div-titulo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }

@@ -15,6 +15,7 @@ import AlertaDeErro from "../../componentes/AlertaDeErro";
 import Carrinho from "../../componentes/Carrinho";
 import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
 import { ReactComponent as ArrowLeft } from "../../assets/ArrowLeft.svg";
+import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
 
 export default function Produtos() {
   const { setToken, token, restaurante, setRestaurante, carrinho } = useAuth();
@@ -119,7 +120,10 @@ export default function Produtos() {
       >
         <div className="nome-restaurante">
           <ArrowLeft onClick={() => history.push("/restaurantes")} />
-          <h1>{restaurante.nome}</h1>
+          <div className="div-titulo">
+            <h1>{restaurante.nome}</h1>
+            <ModalAcompanharPedido />
+          </div>   
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>

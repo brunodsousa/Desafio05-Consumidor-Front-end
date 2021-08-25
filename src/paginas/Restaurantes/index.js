@@ -10,7 +10,7 @@ import Card from "../../componentes/Card";
 import { useState, useEffect } from "react";
 import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
-
+import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
 
 export default function Produtos() {
   const { setToken, token } = useAuth();
@@ -22,8 +22,8 @@ export default function Produtos() {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
 
-  const handleChange = e => {
-    e.preventDefault()
+  const handleChange = (e) => {
+    e.preventDefault();
     setBuscarRestaurante(e.target.value);
   };
 
@@ -35,7 +35,6 @@ export default function Produtos() {
       clearTimeout(timeout);
     };
   }, [erro]);
-
 
   async function listaDeRestaurantes() {
     setCarregando(true);
@@ -61,15 +60,17 @@ export default function Produtos() {
   }, []);
 
   useEffect(() => {
-    const resultados = restaurantes.filter(restaurante => restaurante.nome.toLowerCase().includes(buscarRestaurante.toLowerCase()));
-    
-    if(resultados.length > 0) {
+    const resultados = restaurantes.filter((restaurante) =>
+      restaurante.nome.toLowerCase().includes(buscarRestaurante.toLowerCase())
+    );
+
+    if (resultados.length > 0) {
       setResultadoNaoEncontrado(false);
     } else if (resultados.length === 0) {
       setResultadoNaoEncontrado(true);
     }
     setResultadoRestaurante(resultados);
-  }, [buscarRestaurante])
+  }, [buscarRestaurante]);
 
   function logout() {
     setToken("");
@@ -92,11 +93,15 @@ export default function Produtos() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <h1>Restaurantes</h1>
+        <div className="div-titulo">
+          <h1>Restaurantes</h1>
+          <ModalAcompanharPedido />
+        </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-      <input className="input-busca"
+      <input
+        className="input-busca"
         type="text"
         placeholder="Buscar"
         value={buscarRestaurante}
@@ -110,35 +115,37 @@ export default function Produtos() {
             Tente novamente mais tarde!
           </p>
         )}
-          {buscarRestaurante === "" ? (
-            <div className="container-cards">
-              {restaurantes.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  id={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                  />
-                  ))}
-            </div>
+        {buscarRestaurante === "" ? (
+          <div className="container-cards">
+            {restaurantes.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                id={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="container-cards">
+            {resultadoRestaurante.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+            {resultadoNaoEncontrado === true ? (
+              <p>Nenhum restaurante encontrado!</p>
             ) : (
-            <div className="container-cards">
-              {resultadoRestaurante.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                />
-              ))}
-              {resultadoNaoEncontrado === true ? (
-                  <p>Nenhum restaurante encontrado!</p>
-              ) : ""}
-            </div>
+              ""
             )}
+          </div>
+        )}
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
