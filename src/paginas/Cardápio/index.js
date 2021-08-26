@@ -126,9 +126,9 @@ export default function Produtos() {
   return (
     <div className="container-restaurantes">
       <img
-        className="avatar"
+        className="avatar-restaurante"
         src={restaurante.imagem ? restaurante.imagem : logoPadraoRestaurante}
-        alt="imagem do usuário"
+        alt="imagem do restaurante"
       />
       <img className="ilustracao2" src={ilustracao} alt="ilustracao" />
       <div
