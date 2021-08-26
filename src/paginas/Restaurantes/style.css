@@ -25,8 +25,7 @@ select {
   height: 2.5rem;
   width: 15.9rem;
   position: relative;
-  top: 40px;
-  left: 1300px;
+  margin: 4rem 0 0 66rem;
   z-index: 2;
   padding: 11px 40px;
   border: none;
@@ -122,7 +121,7 @@ select:focus {
     margin: 3rem 0 0 58rem;
   }
   select {
-    left: 1112px;
+    margin: 3rem 0 0 58rem;
   }
 
 }
@@ -140,7 +139,7 @@ select:focus {
     gap: 20px;
   }
   select {
-    left: 990px;
+    margin: 3rem 0 0 53rem;
   }
 }
   
