@@ -2,7 +2,6 @@ import "./style.css";
 import ilustracao from "../../assets/illustration-2.svg";
 import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
-import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
 import { get } from "../../servicos/requisicaoAPI";
@@ -12,6 +11,7 @@ import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
 import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
 import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
+import ModalEditarConsumidor from "../../componentes/ModalEditarConsumidor";
 
 export default function Produtos() {
   const { setToken, token } = useAuth();
@@ -26,6 +26,8 @@ export default function Produtos() {
   const [carregando, setCarregando] = useState(false);
   const [detalhePedido, setDetalhePedido] = useState("");
   const [mensagemSucesso, setMensagemSucesso] = useState("");
+  const [consumidor, setConsumidor] = useState({});
+  const [endereco, setEndereco] = useState({});
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -93,6 +95,26 @@ export default function Produtos() {
     }
   }
 
+  async function dadosConsumidor() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("consumidor", token);
+
+      setCarregando(false);
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setEndereco(dados.endereco);
+      return setConsumidor(dados.consumidor);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
   async function detalhamentoPedido() {
     setCarregando(true);
     setErro("");
@@ -119,6 +141,7 @@ export default function Produtos() {
   useEffect(() => {
     listaDeRestaurantes();
     detalhamentoPedido();
+    dadosConsumidor();
   }, []);
 
   useEffect(() => {
@@ -149,7 +172,7 @@ export default function Produtos() {
 
   return (
     <div className="container-restaurantes">
-      <img className="avatar" src={avatar} alt="imagem do usuário" />
+      <ModalEditarConsumidor consumidor={consumidor} endereco={endereco} dadosConsumidor={dadosConsumidor} setMensagemSucesso={setMensagemSucesso}/>
       <img className="ilustracao2" src={ilustracao} alt="ilustracao" />
       <div
         className="header-restaurantes"
