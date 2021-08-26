@@ -19,7 +19,7 @@
     justify-content: space-between;
   }
   
-  .avatar {
+  .avatar-restaurante {
     width: 176px;
     height: 176px;
     border-radius: 50%;
@@ -257,4 +257,10 @@
 
     .ver-mair-desativado {
       display: none;
+    }
+    
+    .div-titulo {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
     }

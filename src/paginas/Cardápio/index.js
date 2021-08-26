@@ -15,6 +15,7 @@ import AlertaDeErro from "../../componentes/AlertaDeErro";
 import Carrinho from "../../componentes/Carrinho";
 import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
 import { ReactComponent as ArrowLeft } from "../../assets/ArrowLeft.svg";
+import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
 
 export default function Produtos() {
   const { setToken, token, restaurante, setRestaurante, carrinho } = useAuth();
@@ -24,6 +25,7 @@ export default function Produtos() {
   const [carregando, setCarregando] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [verMais, setVerMais] = useState(false);
+  const [detalhePedido, setDetalhePedido] = useState("");
 
   const { id } = useParams();
 
@@ -83,9 +85,33 @@ export default function Produtos() {
     }
   }
 
+  async function detalhamentoPedido() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("pedidos", token);
+
+      setCarregando(false);
+
+      if (dados === "Não foi encontrado nenhum pedido.") {
+        return setDetalhePedido("");
+      }
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setDetalhePedido(dados);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
   useEffect(() => {
     listarCardapio();
     detalharRestaurante();
+    detalhamentoPedido();
   }, []);
 
   const produtosAtivos = cardapio.filter((produto) => {
@@ -100,9 +126,9 @@ export default function Produtos() {
   return (
     <div className="container-restaurantes">
       <img
-        className="avatar"
+        className="avatar-restaurante"
         src={restaurante.imagem ? restaurante.imagem : logoPadraoRestaurante}
-        alt="imagem do usuário"
+        alt="imagem do restaurante"
       />
       <img className="ilustracao2" src={ilustracao} alt="ilustracao" />
       <div
@@ -119,14 +145,27 @@ export default function Produtos() {
       >
         <div className="nome-restaurante">
           <ArrowLeft onClick={() => history.push("/restaurantes")} />
-          <h1>{restaurante.nome}</h1>
+          <div className="div-titulo">
+            <h1>{restaurante.nome}</h1>
+            {detalhePedido && (
+              <ModalAcompanharPedido
+                detalhePedido={detalhePedido}
+                detalhamentoPedido={detalhamentoPedido}
+                setMensagemSucesso={setMensagemSucesso}
+              />
+            )}
+          </div>
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-        <div className={carrinho.length > 0 ? "revisar-pedido" : "revisar-pedido-escondido"}>
-          <Carrinho setMensagemSucesso={setMensagemSucesso} />
-        </div>
+      <div
+        className={
+          carrinho.length > 0 ? "revisar-pedido" : "revisar-pedido-escondido"
+        }
+      >
+        <Carrinho setMensagemSucesso={setMensagemSucesso} />
+      </div>
       <div className="conteudo-pagina">
         <div className="detalhes-restaurante">
           <div className="informacoes">
@@ -149,7 +188,23 @@ export default function Produtos() {
           </div>
         </div>
         <div className="informacoes descricao">
-          {restaurante.descricao &&  <p>{!verMais && restaurante.descricao.length > 40 ? restaurante.descricao.slice(0, 40) + "..." : restaurante.descricao} <button onClick={() => setVerMais(!verMais)} className={restaurante.descricao.length < 40 ? "ver-mair-desativado" : "ver-mais"}>{verMais ? "ver menos" : "ver mais"}</button></p>}
+          {restaurante.descricao && (
+            <p>
+              {!verMais && restaurante.descricao.length > 40
+                ? restaurante.descricao.slice(0, 40) + "..."
+                : restaurante.descricao}{" "}
+              <button
+                onClick={() => setVerMais(!verMais)}
+                className={
+                  restaurante.descricao.length < 40
+                    ? "ver-mair-desativado"
+                    : "ver-mais"
+                }
+              >
+                {verMais ? "ver menos" : "ver mais"}
+              </button>
+            </p>
+          )}
         </div>
         {produtosAtivos.length === 0 && (
           <div className="listaProdutosVazia">

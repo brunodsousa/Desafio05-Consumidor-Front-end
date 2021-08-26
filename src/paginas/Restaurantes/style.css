@@ -21,6 +21,24 @@
   border: 2px solid black;
 }
 
+select {
+  height: 2.5rem;
+  width: 15.9rem;
+  position: relative;
+  margin: 4rem 0 0 66rem;
+  z-index: 2;
+  padding: 11px 40px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+  background-color: #F5F5F5;
+}
+
+select:focus {
+  outline: none;
+  border: 2px solid black;
+}
+
 .ilustracao2 {
   position: absolute;
   z-index: 2;
@@ -102,6 +120,9 @@
   .input-busca {
     margin: 3rem 0 0 58rem;
   }
+  select {
+    margin: 3rem 0 0 58rem;
+  }
 
 }
 
@@ -116,6 +137,9 @@
 
   .container-cards {
     gap: 20px;
+  }
+  select {
+    margin: 3rem 0 0 53rem;
   }
 }
   
@@ -166,5 +190,11 @@
     opacity: 1;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(6px);
+  }
+
+  .div-titulo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
   }
   

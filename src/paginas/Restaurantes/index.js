@@ -2,30 +2,42 @@ import "./style.css";
 import ilustracao from "../../assets/illustration-2.svg";
 import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
-import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { get } from "../../servicos/requisicaoAPI";
 import Card from "../../componentes/Card";
 import { useState, useEffect } from "react";
 import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
-
+import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
+import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
+import ModalEditarConsumidor from "../../componentes/ModalEditarConsumidor";
 
 export default function Produtos() {
   const { setToken, token } = useAuth();
   const [restaurantes, setRestaurantes] = useState([]);
   const [buscarRestaurante, setBuscarRestaurante] = useState("");
   const [resultadoRestaurante, setResultadoRestaurante] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [filtroCategoria, setFiltroCategoria] = useState("");
   const [resultadoNaoEncontrado, setResultadoNaoEncontrado] = useState(false);
   const history = useHistory();
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [detalhePedido, setDetalhePedido] = useState("");
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
+  const [consumidor, setConsumidor] = useState({});
+  const [endereco, setEndereco] = useState({});
 
-  const handleChange = e => {
-    e.preventDefault()
+  const handleChange = (e) => {
+    e.preventDefault();
     setBuscarRestaurante(e.target.value);
   };
+
+  const handleCategoria = (e) => {
+    e.preventDefault();
+    setFiltroCategoria(e.target.value);
+  }
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -36,12 +48,58 @@ export default function Produtos() {
     };
   }, [erro]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMensagemSucesso("");
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [mensagemSucesso]);
 
   async function listaDeRestaurantes() {
     setCarregando(true);
     setErro("");
     try {
-      const { dados, erro } = await get("restaurantes", token);
+      const { dados, erro } = await get(`${filtroCategoria ? `restaurantes?categoria=${filtroCategoria}` : 'restaurantes'}`, token);
+
+      setCarregando(false);
+      console.log(filtroCategoria);
+      if (erro) {
+        return setErro(dados);
+      }
+      console.log(dados);
+      return setRestaurantes(dados);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
+  async function listarCategorias() {
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const { dados, erro } = await get("categorias", token);
+
+      setCarregando(false);
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setCategorias(dados);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
+  async function dadosConsumidor() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("consumidor", token);
 
       setCarregando(false);
 
@@ -49,7 +107,31 @@ export default function Produtos() {
         return setErro(dados);
       }
 
-      return setRestaurantes(dados);
+      setEndereco(dados.endereco);
+      return setConsumidor(dados.consumidor);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
+  async function detalhamentoPedido() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("pedidos", token);
+
+      setCarregando(false);
+
+      if (dados === "Não foi encontrado nenhum pedido.") {
+        return setDetalhePedido("");
+      }
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setDetalhePedido(dados);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
@@ -58,6 +140,12 @@ export default function Produtos() {
 
   useEffect(() => {
     listaDeRestaurantes();
+    detalhamentoPedido();
+    dadosConsumidor();
+  }, []);
+
+  useEffect(() => {
+    listarCategorias();
   }, []);
 
   useEffect(() => {
@@ -69,8 +157,14 @@ export default function Produtos() {
       setResultadoNaoEncontrado(true);
     }
     setResultadoRestaurante(resultados);
-  }, [buscarRestaurante])
+  }, [buscarRestaurante]);
 
+  useEffect(() => {
+    listaDeRestaurantes();
+
+  }, [filtroCategoria]);
+
+ 
   function logout() {
     setToken("");
     history.push("/");
@@ -78,7 +172,7 @@ export default function Produtos() {
 
   return (
     <div className="container-restaurantes">
-      <img className="avatar" src={avatar} alt="imagem do usuário" />
+      <ModalEditarConsumidor consumidor={consumidor} endereco={endereco} dadosConsumidor={dadosConsumidor} setMensagemSucesso={setMensagemSucesso}/>
       <img className="ilustracao2" src={ilustracao} alt="ilustracao" />
       <div
         className="header-restaurantes"
@@ -92,16 +186,37 @@ export default function Produtos() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <h1>Restaurantes</h1>
+        <div className="div-titulo">
+          <h1>Restaurantes</h1>
+          {detalhePedido && (
+            <ModalAcompanharPedido
+              detalhePedido={detalhePedido}
+              detalhamentoPedido={detalhamentoPedido}
+              setMensagemSucesso={setMensagemSucesso}
+            />
+          )}
+        </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-      <input className="input-busca"
+      <input
+        className="input-busca"
         type="text"
         placeholder="Buscar"
         value={buscarRestaurante}
         onChange={handleChange}
       />
+      <div>
+        <select onChange={handleCategoria} className="filtro-categorias">
+          <option value="" selected="categoria">
+            Escolha uma categoria
+          </option>
+          <hr />
+          {categorias.map((categoria) => (
+            <option className="option" key={categoria.id} value={categoria.nome}>{categoria.nome}</option>
+          ))}
+        </select>
+      </div>
       <div className="conteudo-pagina">
         {restaurantes.length === 0 && (
           <p>
@@ -110,38 +225,41 @@ export default function Produtos() {
             Tente novamente mais tarde!
           </p>
         )}
-          {buscarRestaurante === "" ? (
-            <div className="container-cards">
-              {restaurantes.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  id={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                  />
-                  ))}
-            </div>
+        {buscarRestaurante === "" ? (
+          <div className="container-cards">
+            {restaurantes.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                id={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="container-cards">
+            {resultadoRestaurante.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+            {resultadoNaoEncontrado === true ? (
+              <p>Nenhum restaurante encontrado!</p>
             ) : (
-            <div className="container-cards">
-              {resultadoRestaurante.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                />
-              ))}
-              {resultadoNaoEncontrado === true ? (
-                  <p>Nenhum restaurante encontrado!</p>
-              ) : ""}
-            </div>
+              ""
             )}
+          </div>
+        )}
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
+      <AlertaDeConfirmacao mensagem={mensagemSucesso} />
     </div>
   );
 }
