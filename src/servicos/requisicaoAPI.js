@@ -68,3 +68,27 @@ export async function get(endPoint, token) {
     throw error;
   }
 }
+
+export async function putConsumidor(endPoint, data, token) {
+  const headers = {
+    "Content-type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  try {
+    const resposta = await fetch(baseURL + endPoint, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers,
+    });
+
+    const dados = await resposta.json();
+
+    return { dados, erro: !resposta.ok };
+  } catch (error) {
+    throw error;
+  }
+}

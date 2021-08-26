@@ -11,15 +11,16 @@ import useAuth from "../../hooks/useAuth";
 import avatar from "../../assets/avatar3.png";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import { putConsumidor } from "../../servicos/requisicaoAPI";
 
-export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
+export default function ModalEditarUsuario({ consumidor, endereco, dadosConsumidor, setMensagemSucesso }) {
   const classes = useStyles();
   const { token } = useAuth();
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [endereco, setEndereco] = useState("");
+  const [enderecoConsumidor, setEnderecoConsumidor] = useState("");
   const [cep, setCep] = useState("");
   const [complemento, setComplemento] = useState("");
   const [senha, setSenha] = useState("");
@@ -28,7 +29,7 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
   const [carregando, setCarregando] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
-
+  const [imagem, setImagem] = useState("");
   const [base64Imagem, setBase64Imagem] = useState("");
 
   useEffect(() => {
@@ -42,12 +43,13 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
 
   function abrirModal() {
     setOpen(true);
-    setNome(consumidor.consumidor.nome);
-    setEmail(consumidor.consumidor.email);
-    setTelefone(consumidor.consumidor.telefone);
-    setCep(consumidor.endereco.cep);
-    setEndereco(consumidor.endereco.endereco);
-    setComplemento(consumidor.endereco.complemento);
+    setNome(consumidor.nome);
+    setEmail(consumidor.email);
+    setTelefone(consumidor.telefone);
+    setImagem(consumidor.imagem);
+    setCep(endereco.cep);
+    setEnderecoConsumidor(endereco.endereco);
+    setComplemento(endereco.complemento);
     setBase64Imagem("");
     setSenha("");
     setConfirmarSenha("");
@@ -57,12 +59,13 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
 
   function fecharModal() {
     setOpen(false);
-    setNome(consumidor.consumidor.nome);
-    setEmail(consumidor.consumidor.email);
-    setTelefone(consumidor.consumidor.telefone);
-    setCep(consumidor.endereco.cep);
-    setEndereco(consumidor.endereco.endereco);
-    setComplemento(consumidor.endereco.complemento);
+    setNome(consumidor.nome);
+    setEmail(consumidor.email);
+    setTelefone(consumidor.telefone);
+    setImagem(consumidor.imagem);
+    setCep(endereco.cep);
+    setEnderecoConsumidor(endereco.endereco);
+    setComplemento(endereco.complemento);
     setBase64Imagem("");
     setSenha("");
     setConfirmarSenha("");
@@ -75,38 +78,41 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
     setErro("");
     setCarregando(true);
 
+    if (senha) {
+      if (senha !== confirmarSenha) {
+        setCarregando(false);
+        setErro("Senha e Repita a senha devem ser iguais!");
+        return;
+      }
+    }
+
     const dadosCadastro = {
-      nome: nome,
-      email: email,
-      senha: senha,
-      restaurante: {
-        imagem: base64Imagem,
-      },
+      nome,
+      email,
+      telefone,
+      senha,
+      endereco: enderecoConsumidor,
+      cep,
+      complemento,
+      imagem: base64Imagem,
     };
 
     try {
-      // const { dados, erro } = await putUsuario(
-      //   'usuarios',
-      //   dadosCadastro,
-      //   token
-      // );
+      const { dados, erro } = await putConsumidor(
+        'consumidor',
+        dadosCadastro,
+        token
+      );
 
       setCarregando(false);
-      if (senha) {
-        if (senha !== confirmarSenha) {
-          setErro("Senha e Repita a senha devem ser iguais!");
-          return;
-        }
-      }
 
       if (erro) {
-        setCarregando(false);
-        //return setErro(dados);
+        return setErro(dados);
       }
 
-      await dadosUsuario();
+      await dadosConsumidor();
 
-      setCarregando(false);
+      setMensagemSucesso("Consumidor atualizado com sucesso.");
       setOpen(false);
       setSenha("");
       setConfirmarSenha("");
@@ -120,7 +126,7 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
     <div className={classes.container}>
       <img
         className={classes.logo}
-        src={consumidor.consumidor.imagem ? consumidor.consumidor.imagem : avatar}
+        src={consumidor.imagem ? consumidor.imagem : avatar}
         alt="logo usuário"
         onClick={abrirModal}
       />
@@ -190,8 +196,8 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
                   Endereço
                 </label>
                 <input
-                  value={endereco}
-                  onChange={(e) => setEndereco(e.target.value)}
+                  value={enderecoConsumidor}
+                  onChange={(e) => setEnderecoConsumidor(e.target.value)}
                   className={classes.input}
                   type="text"
                   id="endereco"
@@ -244,7 +250,7 @@ export default function ModalEditarUsuario({ consumidor, dadosUsuario }) {
             </div>
             <div className={classes.imagemPerfil}>
               <InputImagem
-                imagem={consumidor.consumidor.imagem}
+                imagem={imagem}
                 setBase64Imagem={setBase64Imagem}
               />
             </div>

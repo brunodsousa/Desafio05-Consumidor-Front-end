@@ -25,6 +25,7 @@ export default function Produtos() {
   const [detalhePedido, setDetalhePedido] = useState("");
   const [mensagemSucesso, setMensagemSucesso] = useState("");
   const [consumidor, setConsumidor] = useState({});
+  const [endereco, setEndereco] = useState({});
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -80,7 +81,8 @@ export default function Produtos() {
         return setErro(dados);
       }
 
-      return setConsumidor(dados);
+      setEndereco(dados.endereco);
+      return setConsumidor(dados.consumidor);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
@@ -136,7 +138,7 @@ export default function Produtos() {
 
   return (
     <div className="container-restaurantes">
-      <ModalEditarConsumidor consumidor={consumidor}/>
+      <ModalEditarConsumidor consumidor={consumidor} endereco={endereco} dadosConsumidor={dadosConsumidor} setMensagemSucesso={setMensagemSucesso}/>
       <img className="ilustracao2" src={ilustracao} alt="ilustracao" />
       <div
         className="header-restaurantes"
