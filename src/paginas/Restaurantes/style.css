@@ -23,10 +23,10 @@
 
 select {
   height: 2.5rem;
-  width: 12.9rem;
+  width: 15.9rem;
   position: relative;
   top: 40px;
-  left: 1320px;
+  left: 1300px;
   z-index: 2;
   padding: 11px 40px;
   border: none;
@@ -121,6 +121,9 @@ select:focus {
   .input-busca {
     margin: 3rem 0 0 58rem;
   }
+  select {
+    left: 1112px;
+  }
 
 }
 
@@ -135,6 +138,9 @@ select:focus {
 
   .container-cards {
     gap: 20px;
+  }
+  select {
+    left: 990px;
   }
 }
   
