@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
 import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
+import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
 
 export default function Produtos() {
   const { setToken, token } = useAuth();
@@ -22,6 +23,7 @@ export default function Produtos() {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [detalhePedido, setDetalhePedido] = useState("");
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -36,6 +38,15 @@ export default function Produtos() {
       clearTimeout(timeout);
     };
   }, [erro]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMensagemSucesso("");
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [mensagemSucesso]);
 
   async function listaDeRestaurantes() {
     setCarregando(true);
@@ -64,7 +75,7 @@ export default function Produtos() {
 
       setCarregando(false);
 
-      if(dados === "Não foi encontrado nenhum pedido.") {
+      if (dados === "Não foi encontrado nenhum pedido.") {
         return setDetalhePedido("");
       }
 
@@ -73,8 +84,7 @@ export default function Produtos() {
       }
 
       setDetalhePedido(dados);
-
-    }catch(error) {
+    } catch (error) {
       setCarregando(false);
       setErro(error.message);
     }
@@ -82,7 +92,7 @@ export default function Produtos() {
 
   useEffect(() => {
     listaDeRestaurantes();
-    detalhamentoPedido(); 
+    detalhamentoPedido();
   }, []);
 
   useEffect(() => {
@@ -121,7 +131,13 @@ export default function Produtos() {
       >
         <div className="div-titulo">
           <h1>Restaurantes</h1>
-          {detalhePedido && <ModalAcompanharPedido detalhePedido={detalhePedido} detalhamentoPedido={detalhamentoPedido}/>}
+          {detalhePedido && (
+            <ModalAcompanharPedido
+              detalhePedido={detalhePedido}
+              detalhamentoPedido={detalhamentoPedido}
+              setMensagemSucesso={setMensagemSucesso}
+            />
+          )}
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
@@ -175,6 +191,7 @@ export default function Produtos() {
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
+      <AlertaDeConfirmacao mensagem={mensagemSucesso} />
     </div>
   );
 }

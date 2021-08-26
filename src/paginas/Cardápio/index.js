@@ -93,7 +93,7 @@ export default function Produtos() {
 
       setCarregando(false);
 
-      if(dados === "Não foi encontrado nenhum pedido.") {
+      if (dados === "Não foi encontrado nenhum pedido.") {
         return setDetalhePedido("");
       }
 
@@ -102,8 +102,7 @@ export default function Produtos() {
       }
 
       setDetalhePedido(dados);
-
-    }catch(error) {
+    } catch (error) {
       setCarregando(false);
       setErro(error.message);
     }
@@ -112,7 +111,7 @@ export default function Produtos() {
   useEffect(() => {
     listarCardapio();
     detalharRestaurante();
-    detalhamentoPedido(); 
+    detalhamentoPedido();
   }, []);
 
   const produtosAtivos = cardapio.filter((produto) => {
@@ -148,15 +147,25 @@ export default function Produtos() {
           <ArrowLeft onClick={() => history.push("/restaurantes")} />
           <div className="div-titulo">
             <h1>{restaurante.nome}</h1>
-            {detalhePedido && <ModalAcompanharPedido detalhePedido={detalhePedido} detalhamentoPedido={detalhamentoPedido}/>}
-          </div>   
+            {detalhePedido && (
+              <ModalAcompanharPedido
+                detalhePedido={detalhePedido}
+                detalhamentoPedido={detalhamentoPedido}
+                setMensagemSucesso={setMensagemSucesso}
+              />
+            )}
+          </div>
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-        <div className={carrinho.length > 0 ? "revisar-pedido" : "revisar-pedido-escondido"}>
-          <Carrinho setMensagemSucesso={setMensagemSucesso} />
-        </div>
+      <div
+        className={
+          carrinho.length > 0 ? "revisar-pedido" : "revisar-pedido-escondido"
+        }
+      >
+        <Carrinho setMensagemSucesso={setMensagemSucesso} />
+      </div>
       <div className="conteudo-pagina">
         <div className="detalhes-restaurante">
           <div className="informacoes">
@@ -179,7 +188,23 @@ export default function Produtos() {
           </div>
         </div>
         <div className="informacoes descricao">
-          {restaurante.descricao &&  <p>{!verMais && restaurante.descricao.length > 40 ? restaurante.descricao.slice(0, 40) + "..." : restaurante.descricao} <button onClick={() => setVerMais(!verMais)} className={restaurante.descricao.length < 40 ? "ver-mair-desativado" : "ver-mais"}>{verMais ? "ver menos" : "ver mais"}</button></p>}
+          {restaurante.descricao && (
+            <p>
+              {!verMais && restaurante.descricao.length > 40
+                ? restaurante.descricao.slice(0, 40) + "..."
+                : restaurante.descricao}{" "}
+              <button
+                onClick={() => setVerMais(!verMais)}
+                className={
+                  restaurante.descricao.length < 40
+                    ? "ver-mair-desativado"
+                    : "ver-mais"
+                }
+              >
+                {verMais ? "ver menos" : "ver mais"}
+              </button>
+            </p>
+          )}
         </div>
         {produtosAtivos.length === 0 && (
           <div className="listaProdutosVazia">

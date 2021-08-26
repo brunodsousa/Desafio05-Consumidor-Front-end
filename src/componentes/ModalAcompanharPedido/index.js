@@ -8,7 +8,7 @@ import { ReactComponent as Close } from "../../assets/close-red.svg";
 import { postConfirmarEntrega } from "../../servicos/requisicaoAPI";
 import "./style.css";
 
-export default function AcompanharPedido({ detalhePedido, detalhamentoPedido }) {
+export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, setMensagemSucesso }) {
   const [open, setOpen] = useState(false);
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -29,7 +29,6 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido }) 
     setOpen(true);
     setPedidos(detalhePedido);
     setProdutos(detalhePedido.itensPedido);
-    console.log(detalhePedido);
   }
 
   function fecharModal() {
@@ -53,6 +52,7 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido }) 
       }
 
       await detalhamentoPedido();
+      setMensagemSucesso("Entrega confirmada.")
       fecharModal();
     } catch (error) {
       setCarregando(false);
