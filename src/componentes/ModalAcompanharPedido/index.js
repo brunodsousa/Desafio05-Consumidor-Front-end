@@ -4,15 +4,16 @@ import Carregando from "../Carregando";
 import AlertaDeErro from "../AlertaDeErro";
 import CardProdutoPedido from "../CardProdutoPedido";
 import useAuth from "../../hooks/useAuth";
-import {ReactComponent as Close} from "../../assets/close-red.svg";
-import  logo from "../../assets/LogoRestaurante.png";
+import { ReactComponent as Close } from "../../assets/close-red.svg";
+import { postConfirmarEntrega } from "../../servicos/requisicaoAPI";
 import "./style.css";
 
-export default function AcompanharPedido() {
+export default function AcompanharPedido({ detalhePedido, detalhamentoPedido }) {
   const [open, setOpen] = useState(false);
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
-  const [pedidos, setPedidos] = useState(["1", "2"]);
+  const [pedidos, setPedidos] = useState({});
+  const [produtos, setProdutos] = useState([]);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -26,10 +27,37 @@ export default function AcompanharPedido() {
 
   function abrirModal() {
     setOpen(true);
+    setPedidos(detalhePedido);
+    setProdutos(detalhePedido.itensPedido);
+    console.log(detalhePedido);
   }
 
   function fecharModal() {
     setOpen(false);
+  }
+
+  async function confirmarEntrega() {
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const { dados, erro } = await postConfirmarEntrega(
+        `entregas/${pedidos.idPedido}/ativar`,
+        token
+      );
+
+      setCarregando(false);
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      await detalhamentoPedido();
+      fecharModal();
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
   }
 
   return (
@@ -45,36 +73,87 @@ export default function AcompanharPedido() {
         scroll="body"
       >
         <div className="acompanharPedido">
-          <div className="categoria-restaurante">
-            <Close onClick={fecharModal}/>
-            <img src={logo} alt="imagem restaurante"/>
+          <div
+            className="categoria-restaurante"
+            style={{
+              backgroundImage: `url(${pedidos.imagemCategoria})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <Close onClick={fecharModal} />
+            <img src={pedidos.imagemRestaurante} alt="imagem restaurante" />
           </div>
           <div className="informacoes-pedido">
-            <h2>Restaurante</h2>
-            <p>Status: <span style={{color: "red"}}>Sendo preparado</span></p>
+            <h2>{pedidos.nomeRestaurante}</h2>
+            <p>
+              Status:{" "}
+              <span
+                style={{
+                  color: `${pedidos.saiuParaEntrega ? "green" : "red"}`,
+                }}
+              >
+                {pedidos.saiuParaEntrega
+                  ? "Enviado para entrega"
+                  : "Sendo preparado"}
+              </span>
+            </p>
             <div className="listaProdutosPedido">
-              {pedidos.map(pedido => (
-                <CardProdutoPedido key={pedido} nome={"Pizza"} quantidade={2} preco={4000} imagem={logo} />
+              {produtos.map((produto) => (
+                <CardProdutoPedido
+                  key={produto.nomeProduto}
+                  nome={produto.nomeProduto}
+                  quantidade={produto.quantidade}
+                  preco={produto.subtotalProduto}
+                  imagem={produto.imagemProduto}
+                />
               ))}
             </div>
             <div className="divider"></div>
             <div className="valores">
               <div className="totais">
                 <p>Subtotal</p>
-                <span className="subtotal">50,00</span>
+                <span className="subtotal">
+                  {Number(pedidos.subtotalPedido / 100).toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                    }
+                  )}
+                </span>
               </div>
               <div className="totais">
                 <p>Taxa de entrega</p>
-                <span className="subtotal">10,00</span>
+                <span className="subtotal">
+                  {Number(pedidos.taxaDeEntrega / 100).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </span>
               </div>
               <div className="totais">
                 <p>Total</p>
-                <span className="total">60,00</span>
+                <span className="total">
+                  {Number(pedidos.valorTotalPedido / 100).toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                    }
+                  )}
+                </span>
               </div>
             </div>
-            <button type="button" className="button">
-              Confirmar Entrega
-            </button>
+            {pedidos.saiuParaEntrega && (
+              <button
+                onClick={() => confirmarEntrega()}
+                type="button"
+                className="button"
+              >
+                Confirmar Entrega
+              </button>
+            )}
           </div>
         </div>
         <AlertaDeErro erro={erro} />

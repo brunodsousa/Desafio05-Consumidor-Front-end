@@ -4,7 +4,7 @@ import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
 import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { get } from "../../servicos/requisicaoAPI";
 import Card from "../../componentes/Card";
 import { useState, useEffect } from "react";
@@ -21,6 +21,7 @@ export default function Produtos() {
   const history = useHistory();
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [detalhePedido, setDetalhePedido] = useState("");
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -55,8 +56,33 @@ export default function Produtos() {
     }
   }
 
+  async function detalhamentoPedido() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("pedidos", token);
+
+      setCarregando(false);
+
+      if(dados === "Não foi encontrado nenhum pedido.") {
+        return setDetalhePedido("");
+      }
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setDetalhePedido(dados);
+
+    }catch(error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
   useEffect(() => {
     listaDeRestaurantes();
+    detalhamentoPedido(); 
   }, []);
 
   useEffect(() => {
@@ -95,7 +121,7 @@ export default function Produtos() {
       >
         <div className="div-titulo">
           <h1>Restaurantes</h1>
-          <ModalAcompanharPedido />
+          {detalhePedido && <ModalAcompanharPedido detalhePedido={detalhePedido} detalhamentoPedido={detalhamentoPedido}/>}
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>

@@ -17,7 +17,7 @@ export default function CardProdutoCarrinho({
               {quantidade} {quantidade === 1 ? "unidade" : "unidades"}
             </p>
           <span>
-            {Number((preco * quantidade) / 100).toLocaleString("pt-BR", {
+            {Number(preco / 100).toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
