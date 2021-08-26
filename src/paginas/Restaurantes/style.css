@@ -21,6 +21,25 @@
   border: 2px solid black;
 }
 
+select {
+  height: 2.5rem;
+  width: 12.9rem;
+  position: relative;
+  top: 40px;
+  left: 1320px;
+  z-index: 2;
+  padding: 11px 40px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+  background-color: #F5F5F5;
+}
+
+select:focus {
+  outline: none;
+  border: 2px solid black;
+}
+
 .ilustracao2 {
   position: absolute;
   z-index: 2;

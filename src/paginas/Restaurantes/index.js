@@ -17,6 +17,10 @@ export default function Produtos() {
   const [restaurantes, setRestaurantes] = useState([]);
   const [buscarRestaurante, setBuscarRestaurante] = useState("");
   const [resultadoRestaurante, setResultadoRestaurante] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [filtroCategoria, setFiltroCategoria] = useState("");
+  const [restaurantesCategoria, setRestaurantesCategoria] = useState([]);
+  const [resultadoFiltro, setResultadoFiltro] = useState(false);
   const [resultadoNaoEncontrado, setResultadoNaoEncontrado] = useState(false);
   const history = useHistory();
   const [erro, setErro] = useState("");
@@ -26,6 +30,11 @@ export default function Produtos() {
     e.preventDefault()
     setBuscarRestaurante(e.target.value);
   };
+
+  const handleCategoria = (e) => {
+    e.preventDefault();
+    setFiltroCategoria(e.target.value);
+  }
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -41,15 +50,34 @@ export default function Produtos() {
     setCarregando(true);
     setErro("");
     try {
-      const { dados, erro } = await get("restaurantes", token);
+      const { dados, erro } = await get(`${filtroCategoria ? `restaurantes?categoria=${filtroCategoria}` : 'restaurantes'}`, token);
 
       setCarregando(false);
+      console.log(filtroCategoria);
+      if (erro) {
+        return setErro(dados);
+      }
+      console.log(dados);
+      return setRestaurantes(dados);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
 
+  async function listarCategorias() {
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const { dados, erro } = await get("categorias", token);
+
+      setCarregando(false);
       if (erro) {
         return setErro(dados);
       }
 
-      return setRestaurantes(dados);
+      setCategorias(dados);
     } catch (error) {
       setCarregando(false);
       setErro(error.message);
@@ -61,6 +89,10 @@ export default function Produtos() {
   }, []);
 
   useEffect(() => {
+    listarCategorias();
+  }, []);
+
+  useEffect(() => {
     const resultados = restaurantes.filter(restaurante => restaurante.nome.toLowerCase().includes(buscarRestaurante.toLowerCase()));
     
     if(resultados.length > 0) {
@@ -69,8 +101,14 @@ export default function Produtos() {
       setResultadoNaoEncontrado(true);
     }
     setResultadoRestaurante(resultados);
-  }, [buscarRestaurante])
+  }, [buscarRestaurante]);
 
+  useEffect(() => {
+    listaDeRestaurantes();
+
+  }, [filtroCategoria]);
+
+ 
   function logout() {
     setToken("");
     history.push("/");
@@ -102,6 +140,17 @@ export default function Produtos() {
         value={buscarRestaurante}
         onChange={handleChange}
       />
+      <div>
+        <select onChange={handleCategoria} className="filtro-categorias">
+          <option value="" selected="categoria">
+            Escolha uma categoria
+          </option>
+          <hr />
+          {categorias.map((categoria) => (
+            <option className="option" key={categoria.id} value={categoria.nome}>{categoria.nome}</option>
+          ))}
+        </select>
+      </div>
       <div className="conteudo-pagina">
         {restaurantes.length === 0 && (
           <p>
