@@ -1,0 +1,54 @@
+.container-cardPedido {
+    position: relative;
+  }
+  
+  .conteudo-cardPedido {
+    width: 246px;
+    min-height: 77px;
+    display: flex;
+    gap: 24px;
+  }
+  
+  .informacao-cardPedido {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-right: auto;
+  }
+  
+  .informacao-cardPedido h3 {
+    color: #525459;
+    font-weight: 600;
+    font-size: 20px;
+  }
+  
+  .informacao-cardPedido p {
+    margin-bottom: auto;
+    color: #525459;
+    text-align: start;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .informacao-cardPedido span {
+    box-sizing: content-box;
+    padding: 4px 15px;
+    background: linear-gradient(
+        0deg,
+        rgba(13, 138, 79, 0.1),
+        rgba(13, 138, 79, 0.1)
+      ),
+      #ffffff;
+    border-radius: 4px;
+    width: min-content;
+    color: #006335;
+    font-weight: 600;
+    font-size: 10px;
+  }
+  
+  .container-cardPedido img {
+    width: 77px;
+    height: 77px;
+    border: 2px solid rgba(251, 59, 0, 0.2);
+    border-radius: 16px;
+  }

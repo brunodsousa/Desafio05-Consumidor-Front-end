@@ -4,13 +4,14 @@ import BackgroundImg from "../../assets/bg-pizzaria.png";
 import logo from "../../assets/LogomarcaBranca.svg";
 import avatar from "../../assets/avatar3.png";
 import useAuth from "../../hooks/useAuth";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { get } from "../../servicos/requisicaoAPI";
 import Card from "../../componentes/Card";
 import { useState, useEffect } from "react";
 import Carregando from "../../componentes/Carregando";
 import AlertaDeErro from "../../componentes/AlertaDeErro";
-
+import ModalAcompanharPedido from "../../componentes/ModalAcompanharPedido";
+import AlertaDeConfirmacao from "../../componentes/AlertaDeConfirmacao";
 
 export default function Produtos() {
   const { setToken, token } = useAuth();
@@ -19,15 +20,15 @@ export default function Produtos() {
   const [resultadoRestaurante, setResultadoRestaurante] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [filtroCategoria, setFiltroCategoria] = useState("");
-  const [restaurantesCategoria, setRestaurantesCategoria] = useState([]);
-  const [resultadoFiltro, setResultadoFiltro] = useState(false);
   const [resultadoNaoEncontrado, setResultadoNaoEncontrado] = useState(false);
   const history = useHistory();
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [detalhePedido, setDetalhePedido] = useState("");
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
 
-  const handleChange = e => {
-    e.preventDefault()
+  const handleChange = (e) => {
+    e.preventDefault();
     setBuscarRestaurante(e.target.value);
   };
 
@@ -45,6 +46,14 @@ export default function Produtos() {
     };
   }, [erro]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMensagemSucesso("");
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [mensagemSucesso]);
 
   async function listaDeRestaurantes() {
     setCarregando(true);
@@ -84,8 +93,32 @@ export default function Produtos() {
     }
   }
 
+  async function detalhamentoPedido() {
+    setCarregando(true);
+    setErro("");
+    try {
+      const { dados, erro } = await get("pedidos", token);
+
+      setCarregando(false);
+
+      if (dados === "Não foi encontrado nenhum pedido.") {
+        return setDetalhePedido("");
+      }
+
+      if (erro) {
+        return setErro(dados);
+      }
+
+      setDetalhePedido(dados);
+    } catch (error) {
+      setCarregando(false);
+      setErro(error.message);
+    }
+  }
+
   useEffect(() => {
     listaDeRestaurantes();
+    detalhamentoPedido();
   }, []);
 
   useEffect(() => {
@@ -130,11 +163,21 @@ export default function Produtos() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <h1>Restaurantes</h1>
+        <div className="div-titulo">
+          <h1>Restaurantes</h1>
+          {detalhePedido && (
+            <ModalAcompanharPedido
+              detalhePedido={detalhePedido}
+              detalhamentoPedido={detalhamentoPedido}
+              setMensagemSucesso={setMensagemSucesso}
+            />
+          )}
+        </div>
         <img className="logomarca" src={logo} alt="logomarca" />
         <button onClick={logout}>Logout</button>
       </div>
-      <input className="input-busca"
+      <input
+        className="input-busca"
         type="text"
         placeholder="Buscar"
         value={buscarRestaurante}
@@ -159,38 +202,41 @@ export default function Produtos() {
             Tente novamente mais tarde!
           </p>
         )}
-          {buscarRestaurante === "" ? (
-            <div className="container-cards">
-              {restaurantes.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  id={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                  />
-                  ))}
-            </div>
+        {buscarRestaurante === "" ? (
+          <div className="container-cards">
+            {restaurantes.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                id={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="container-cards">
+            {resultadoRestaurante.map((restaurante) => (
+              <Card
+                key={restaurante.id}
+                preco={restaurante.preco}
+                nome={restaurante.nome}
+                descricao={restaurante.descricao}
+                imagem={restaurante.imagem}
+              />
+            ))}
+            {resultadoNaoEncontrado === true ? (
+              <p>Nenhum restaurante encontrado!</p>
             ) : (
-            <div className="container-cards">
-              {resultadoRestaurante.map((restaurante) => (
-                <Card
-                  key={restaurante.id}
-                  preco={restaurante.preco}
-                  nome={restaurante.nome}
-                  descricao={restaurante.descricao}
-                  imagem={restaurante.imagem}
-                />
-              ))}
-              {resultadoNaoEncontrado === true ? (
-                  <p>Nenhum restaurante encontrado!</p>
-              ) : ""}
-            </div>
+              ""
             )}
+          </div>
+        )}
       </div>
       <AlertaDeErro erro={erro} />
       <Carregando open={carregando} />
+      <AlertaDeConfirmacao mensagem={mensagemSucesso} />
     </div>
   );
 }
