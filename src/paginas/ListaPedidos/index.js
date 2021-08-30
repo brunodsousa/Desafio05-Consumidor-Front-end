@@ -120,8 +120,8 @@ export default function ListaDePedidos() {
           <div className="titulo-pedidos">
             <h5>Pedido</h5>
             <h5>Itens</h5>
-            <h5>Endereço</h5>
             <h5>Status</h5>
+            <h5>Restaurante</h5>
             <h5>Total</h5>
           </div>
           {pedidos.map((pedido) => (
