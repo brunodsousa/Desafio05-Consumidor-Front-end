@@ -64,11 +64,11 @@ export default function Produtos() {
       const { dados, erro } = await get(`${filtroCategoria ? `restaurantes?categoria=${filtroCategoria}` : 'restaurantes'}`, token);
 
       setCarregando(false);
-      console.log(filtroCategoria);
+      
       if (erro) {
         return setErro(dados);
       }
-      console.log(dados);
+      
       return setRestaurantes(dados);
     } catch (error) {
       setCarregando(false);
