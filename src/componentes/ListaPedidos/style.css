@@ -1,0 +1,46 @@
+.conteudo-lista-pedidos {
+  position: relative;
+}
+
+.div-modal-pedido {
+  position: relative;
+  display: grid;
+  padding: 20px;
+  gap: 20px;
+  grid-template-columns: 150px minmax(280px, 1fr) minmax(360px, 1fr) 180px 130px;
+  grid-template-rows: minmax(50px, 1fr);
+  align-items: center;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.conteudo-lista-pedidos p {
+  justify-self: center;
+}
+
+.conteudo-lista-pedidos .produtos-pedido {
+  justify-self: center;
+}
+
+.ver-mais {
+  all: unset;
+  color: #D13201;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  position: relative;
+  z-index: 3;
+}
+
+.produtos-pedido .ver-mais {
+  margin: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.ver-mais-desativado {
+  display: none;
+}

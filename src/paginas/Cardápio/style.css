@@ -264,3 +264,14 @@
       flex-direction: column;
       margin-bottom: 20px;
     }
+
+    .nome-restaurante .botao-link {
+      background: #FFFFFF;
+      border-radius: 20px;
+      color: #D13201;
+      font-weight: 600;
+      width: 80px;
+      padding: 6.5px 10px;
+      text-align: center;
+      margin: 0;
+    }

@@ -6,9 +6,22 @@ import CardProdutoPedido from "../CardProdutoPedido";
 import useAuth from "../../hooks/useAuth";
 import { ReactComponent as Close } from "../../assets/close-red.svg";
 import { postConfirmarEntrega } from "../../servicos/requisicaoAPI";
+import LogoRestaurante from "../../assets/LogoRestaurante.png";
 import "./style.css";
 
-export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, setMensagemSucesso }) {
+export default function AcompanharPedido({
+  itensPedido,
+  dadosPedido,
+  setMensagemSucesso,
+  id,
+  nome,
+  saiuParaEntrega,
+  total,
+  imagemCategoria,
+  imagemRestaurante,
+  subtotalPedido,
+  taxaDeEntrega,
+}) {
   const [open, setOpen] = useState(false);
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -27,8 +40,8 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
 
   function abrirModal() {
     setOpen(true);
-    setPedidos(detalhePedido);
-    setProdutos(detalhePedido.itensPedido);
+    setPedidos({id, nome, saiuParaEntrega, total, imagemCategoria, imagemRestaurante, subtotalPedido, taxaDeEntrega});
+    setProdutos(itensPedido);
   }
 
   function fecharModal() {
@@ -41,7 +54,7 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
 
     try {
       const { dados, erro } = await postConfirmarEntrega(
-        `entregas/${pedidos.idPedido}/ativar`,
+        `entregas/${id}/ativar`,
         token
       );
 
@@ -51,8 +64,8 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
         return setErro(dados);
       }
 
-      await detalhamentoPedido();
-      setMensagemSucesso("Entrega confirmada.")
+      await dadosPedido();
+      setMensagemSucesso("Entrega confirmada.");
       fecharModal();
     } catch (error) {
       setCarregando(false);
@@ -62,9 +75,7 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
 
   return (
     <div className="containerAcompanhar">
-      <button className="buttonAcompanhar" type="button" onClick={abrirModal}>
-        Acompanhar pedido
-      </button>
+      <div onClick={abrirModal} className="modalPedido"></div>
       <Dialog
         open={open}
         onClose={fecharModal}
@@ -82,7 +93,7 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
             }}
           >
             <Close onClick={fecharModal} />
-            <img src={pedidos.imagemRestaurante} alt="imagem restaurante" />
+            <img src={pedidos.imagemRestaurante || LogoRestaurante} alt="imagem restaurante" />
           </div>
           <div className="informacoes-pedido">
             <h2>{pedidos.nomeRestaurante}</h2>
@@ -135,7 +146,7 @@ export default function AcompanharPedido({ detalhePedido, detalhamentoPedido, se
               <div className="totais">
                 <p>Total</p>
                 <span className="total">
-                  {Number(pedidos.valorTotalPedido / 100).toLocaleString(
+                  {Number(pedidos.total / 100).toLocaleString(
                     "pt-BR",
                     {
                       style: "currency",

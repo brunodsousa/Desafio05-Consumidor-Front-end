@@ -189,11 +189,7 @@ export default function Produtos() {
         <div className="div-titulo">
           <h1>Restaurantes</h1>
           {detalhePedido && (
-            <ModalAcompanharPedido
-              detalhePedido={detalhePedido}
-              detalhamentoPedido={detalhamentoPedido}
-              setMensagemSucesso={setMensagemSucesso}
-            />
+            <button className="botao-link" onClick={() => history.push("/pedidos")}>Pedidos</button>
           )}
         </div>
         <img className="logomarca" src={logo} alt="logomarca" />

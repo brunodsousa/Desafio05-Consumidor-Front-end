@@ -1,0 +1,127 @@
+.container-pedidos {
+  min-height: 100vh;
+  position: relative;
+}
+
+.ilustracao2 {
+  position: absolute;
+  z-index: 2;
+}
+
+.header-pedidos {
+  display: flex;
+  height: 245px;
+  width: 100%;
+  border-bottom-right-radius: 232px;
+  position: relative;
+  padding: 107px 200px 0 350px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titulo-restaurante {
+  z-index: 3;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.titulo-restaurante svg {
+  cursor: pointer;
+}
+
+.header-pedidos .botao-link {
+  background: #FFFFFF;
+  border-radius: 20px;
+  color: #D13201;
+  font-weight: 600;
+  padding: 6.5px 26px;
+  margin: 0;
+}
+
+.header-pedidos h1 {
+  font-family: "Baloo 2", cursive;
+  color: white;
+  padding: 0;
+  margin-right: auto;
+  font-size: 40px;
+}
+
+.header-pedidos button {
+  all: unset;
+  color: white;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.conteudo-pedidos {
+  display: flex;
+  flex-direction: column;
+  padding: 202px 110px 57px 110px;
+  align-items: center;
+  min-height: calc(100vh - 245px);
+  position: relative;
+}
+
+.botoes-entregas {
+  position: absolute;
+  top: 75px;
+  right: 110px;
+  z-index: 3;
+}
+
+.button-nao-entregue {
+  border-radius: 5px 0px 0px 5px;
+  width: 120px;
+  height: 41px;
+  font-weight: bold;
+  margin: 0;
+  background-color: #F9F9F9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+}
+
+.button-entregue {
+  border-radius: 0px 5px 5px 0px;
+  width: 120px;
+  height: 41px;
+  font-weight: bold;
+  margin: 0;
+  background-color: #F9F9F9;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+}
+
+.button-selecionado {
+  background-color: #D13201;
+  color: #FFFFFF
+}
+
+.pedidos {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.titulo-pedidos {
+  display: grid;
+  background: #F0F0F0;
+  padding: 20px;
+  gap: 20px;
+  grid-template-columns: 150px minmax(280px, 1fr) minmax(360px, 1fr) 180px 130px;
+  align-items: center;
+}
+
+.titulo-pedidos h5 {
+  justify-self: center;
+}
+
+@media screen and (max-width: 1380px) {
+  .conteudo-pedidos {
+    padding: 180px 65px 57px 65px;
+  }
+
+  .botoes-entregas {
+    right: 65px;
+  }
+
+}
